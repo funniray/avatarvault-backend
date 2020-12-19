@@ -1,0 +1,5 @@
+### Gets all objects in category containing the json array of tags
+GET http://localhost:{{PORT}}/v1/search?page=1&limit=100&category=avatars&tags=["kon"]
+Accept: application/json
+
+###

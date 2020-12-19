@@ -1,0 +1,5 @@
+### Gets all tags containing the query
+GET http://localhost:{{PORT}}/v1/tags?page=1&limit=20&query=e
+Accept: application/json
+
+###

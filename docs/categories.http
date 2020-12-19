@@ -1,0 +1,4 @@
+GET http://localhost:{{PORT}}/v1/categories
+Accept: application/json
+
+###
