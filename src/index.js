@@ -1,4 +1,5 @@
 import Express from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import models from './models.js';
 
@@ -13,6 +14,7 @@ const app = new Express();
 app.models = models;
 app.use(Express.json());
 app.use(Express.urlencoded({extended:true}));
+app.use(cors())
 
 //Use routes
 app.use('/v1/search',search);
