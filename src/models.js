@@ -24,6 +24,23 @@ const Object = mongoose.model("Object", {
     file: String
 })
 
+Utils.findOrCreateTags = (tags) =>
+    Promise.all(tags.map(async tag=>{
+        let t = await Tag.findOne({name:tag});
+        if (t) return t._id;
+        t = new Tag({name:tag});
+        await t.save();
+        return t._id;
+    }));
+
+Utils.findOrCreateCategory = async (category) => {
+    let c = await Category.findOne({name: category});
+    if (c) return c._id;
+    c = new Category({name: category});
+    await c.save();
+    return c._id;
+}
+
 Utils.findTagsById = (ids) => Promise.all(ids.map(async id=> {
     let req;
     try {
