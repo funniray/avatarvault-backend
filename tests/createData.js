@@ -6,7 +6,24 @@ let data = {
     objects:[{
         category:"avatars",
         tags:["female","kon","animal_ears"],
-        name:"idek at this point"
+        name:"idek at this point",
+        previewImage:"https://i.imgur.com/39GZGzZ.png",
+        fileSize:3670016,
+        file:"https://i.imgur.com/39GZGzZ.png"
+    },{
+        category:"avatars",
+        tags:["egirl","female","animal_ears"],
+        name:"Another One",
+        previewImage:"https://i.imgur.com/EHkbIzC.png",
+        fileSize:6770016,
+        file:"https://i.imgur.com/EHkbIzC.png"
+    },{
+        category:"avatars",
+        tags:["egirl","female","animal_ears"],
+        name:"third",
+        previewImage:"https://i.imgur.com/KKujmAv.png",
+        fileSize:7670016,
+        file:"https://i.imgur.com/c9DcW6C.png"
     }]
 }
 
@@ -21,11 +38,10 @@ const run = async()=>{
     for(let tag in tags) {await tags[tag].save()}
 
     data.objects.forEach(obj=>{
-        let cat = categories[obj.category]._id;
-        let t = obj.tags.map(str=>tags[str]._id);
-        console.log(t);
+        obj.category = categories[obj.category]._id;
+        obj.tags = obj.tags.map(str=>tags[str]._id);
 
-        new models.Object({name: obj.name, category: cat, tags: t}).save();
+        new models.Object(obj).save();
     });
 }
 
