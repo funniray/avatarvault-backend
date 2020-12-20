@@ -51,7 +51,7 @@ router.post("",async (req,res)=>{
 
     obj.file = `${baseurl}/${obj._id}.${fileExtension}`;
     if (preview)
-        obj.file = `${baseurl}/${obj._id}.${previewExtension}`;
+        obj.previewImage = `${baseurl}/${obj._id}.${previewExtension}`;
 
     await file.mv(`${storageLocation}/${obj._id}.${fileExtension}`);
     if (preview)
