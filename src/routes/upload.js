@@ -1,6 +1,7 @@
 import Express from 'express'
 import fs from 'fs';
 import {promisify} from 'util'
+import sanitize from 'sanitize-filename'
 
 const unlink = promisify(fs.unlink);
 
@@ -32,9 +33,6 @@ router.post("",async (req,res)=>{
     const fileExtension = fileNameSplit[fileNameSplit.length-1]
     fileNameSplit.pop();
     const fileName = fileNameSplit.join('.');
-    let previewExtension;
-    if (preview)
-        previewExtension = preview.name.split('.')[preview.name.split('.').length - 1]
 
     const tagIds = await req.app.models.Utils.findOrCreateTags(tags);
     const categoryId = await req.app.models.Utils.findOrCreateCategory(category);
@@ -49,13 +47,13 @@ router.post("",async (req,res)=>{
         fileSize: file.size,
     });
 
-    obj.file = `${baseurl}/${obj._id}.${fileExtension}`;
+    obj.file = `${baseurl}/${sanitize(file.name)}`;
     if (preview)
-        obj.previewImage = `${baseurl}/${obj._id}.${previewExtension}`;
+        obj.previewImage = `${baseurl}/${sanitize(preview.name)}`;
 
-    await file.mv(`${storageLocation}/${obj._id}.${fileExtension}`);
+    await file.mv(`${storageLocation}/${sanitize(file.name)}`);
     if (preview)
-        await preview.mv(`${storageLocation}/${obj._id}.${previewExtension}`);
+        await preview.mv(`${storageLocation}/${sanitize(preview.name)}`);
 
     for(let f in req.files) {
         if (f!=='preview'&&f!=='file')
