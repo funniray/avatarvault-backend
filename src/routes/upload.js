@@ -18,8 +18,9 @@ router.post("",async (req,res)=>{
     if (req.body.password !== process.env.PASSWORD) {
         for(let f in req.files) {
             await unlink(req.files[f].tempFilePath);
-            res.send("Incorrect password")
         }
+        res.send("Incorrect password")
+        return;
     }
     const file = req.files.file;
     const preview = req.files.preview;
