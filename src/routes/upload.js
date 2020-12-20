@@ -19,7 +19,7 @@ router.post("",async (req,res)=>{
         for(let f in req.files) {
             await unlink(req.files[f].tempFilePath);
         }
-        res.send("Incorrect password")
+        res.send(`got password ${req.body.password}`);
         return;
     }
     const file = req.files.file;
@@ -32,7 +32,9 @@ router.post("",async (req,res)=>{
     const fileExtension = fileNameSplit[fileNameSplit.length-1]
     fileNameSplit.pop();
     const fileName = fileNameSplit.join('.');
-    const previewExtension = preview.name.split('.')[preview.name.split('.').length-1]
+    let previewExtension;
+    if (preview)
+        previewExtension = preview.name.split('.')[preview.name.split('.').length - 1]
 
     const tagIds = await req.app.models.Utils.findOrCreateTags(tags);
     const categoryId = await req.app.models.Utils.findOrCreateCategory(category);
@@ -48,10 +50,12 @@ router.post("",async (req,res)=>{
     });
 
     obj.file = `${baseurl}/${obj._id}.${fileExtension}`;
-    obj.file = `${baseurl}/${obj._id}.${previewExtension}`;
+    if (preview)
+        obj.file = `${baseurl}/${obj._id}.${previewExtension}`;
 
     await file.mv(`${storageLocation}/${obj._id}.${fileExtension}`);
-    await preview.mv(`${storageLocation}/${obj._id}.${previewExtension}`);
+    if (preview)
+        await preview.mv(`${storageLocation}/${obj._id}.${previewExtension}`);
 
     for(let f in req.files) {
         if (f!=='preview'&&f!=='file')
