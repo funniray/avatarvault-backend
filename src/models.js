@@ -24,6 +24,17 @@ const Object = mongoose.model("Object", {
     file: String
 })
 
+const User = mongoose.model("User",{
+    email: String,
+    username: String,
+    passwordHash: String,
+    accessTokens: [String],
+    grants: {
+        upload: Boolean,
+        admin: Boolean
+    }
+});
+
 Utils.findOrCreateTags = (tags) =>
     Promise.all(tags.map(async tag=>{
         let t = await Tag.findOne({name:tag});
@@ -61,5 +72,15 @@ Utils.findCategory = async (category) => {
     if (req) return req;
 };
 
+//Gets a user object by ID or Access Token
+Utils.getUser = async (id) => {
+    let user = await User.findOne({$or: [{_id: id},{accessTokens:id}]});
 
-export default {Category,Tag,Object, Utils};
+    return {
+        username: user.username,
+        email: user.email,
+        grants: user.grants
+    };
+}
+
+export default {Category,Tag,Object, User, Utils};
