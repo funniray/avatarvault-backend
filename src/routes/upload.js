@@ -7,20 +7,23 @@ const unlink = promisify(fs.unlink);
 
 const router = new Express.Router();
 
-router.post('/checkPass', (req,res)=>{
-    if (req.body.password === process.env.PASSWORD) {
-        res.send(true);
-    } else {
-        res.send(false);
-    }
-})
-
 router.post("",async (req,res)=>{
-    if (req.body.password !== process.env.PASSWORD) {
+    let canUpload = false;
+    if (req.headers.authorization) {
+        console.log(req.headers.authorization)
+        let user = await req.app.models.Utils.getUserByToken(req.headers.authorization);
+        console.log(user);
+        canUpload = user.grants.upload;
+    }
+
+    console.log(canUpload);
+
+    if (!canUpload) {
         for(let f in req.files) {
             await unlink(req.files[f].tempFilePath);
         }
-        res.send(`got password ${req.body.password}`);
+        res.status(401)
+        res.send(`{"error":"User not authorized to upload :("}`);
         return;
     }
     const file = req.files.file;

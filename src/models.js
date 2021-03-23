@@ -83,4 +83,14 @@ Utils.getUser = async (id) => {
     };
 }
 
+Utils.getUserByToken = async (token) => {
+    let user = await User.findOne({accessTokens:token});
+
+    return {
+        username: user.username,
+        email: user.email,
+        grants: user.grants
+    };
+}
+
 export default {Category,Tag,Object, User, Utils};

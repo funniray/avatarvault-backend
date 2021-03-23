@@ -13,7 +13,7 @@ router.post("/login",async (req,res)=>{
     const username = req.body.username;
     const password = req.body.password;
 
-    //Ensure the account doesn't exist
+    //Ensure the account exists
     const currentUser = await User.findOne({username:username});
     if (!currentUser) {
         res.statusCode = 401;
@@ -63,10 +63,12 @@ router.post("/register",async (req,res)=>{
         passwordHash: passwordHash,
     });
 
+    const accessToken = uuid();
+    user.accessTokens.push(accessToken);
     await user.save();
 
     let safeUser = await models.Utils.getUser(user._id);
-
+    safeUser.accessToken = accessToken;
     res.send(safeUser);
 })
 
